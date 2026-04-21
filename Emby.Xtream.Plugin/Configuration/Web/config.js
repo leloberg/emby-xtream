@@ -378,6 +378,7 @@ function (BaseView, loading) {
             view.querySelector('.txtDispatcharrPass').value = config.DispatcharrPass || '';
             view.querySelector('.chkDispatcharrFallback').checked = config.DispatcharrFallbackToXtream !== false;
             view.querySelector('.chkForceAudioTranscode').checked = !!config.ForceAudioTranscode;
+            view.querySelector('.chkDeclareDvbSubtitles').checked = !!config.DeclareDvbSubtitles;
             updateUrlSecurityWarnings(view);
 
             instance.selectedDispatcharrProfileIds = config.SelectedDispatcharrProfileIds || [];
@@ -501,6 +502,7 @@ function (BaseView, loading) {
             config.DispatcharrPass = view.querySelector('.txtDispatcharrPass').value;
             config.DispatcharrFallbackToXtream = view.querySelector('.chkDispatcharrFallback').checked;
             config.ForceAudioTranscode = view.querySelector('.chkForceAudioTranscode').checked;
+            config.DeclareDvbSubtitles = view.querySelector('.chkDeclareDvbSubtitles').checked;
             config.SelectedDispatcharrProfileIds = getSelectedDispatcharrProfileIds(instance);
 
             // VOD Movies

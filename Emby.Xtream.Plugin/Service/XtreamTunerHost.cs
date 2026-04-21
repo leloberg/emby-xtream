@@ -566,7 +566,7 @@ namespace Emby.Xtream.Plugin.Service
 
             _streamStats.TryGetValue(streamId, out var stats);
 
-            var mediaSource = CreateMediaSourceInfo(streamId, streamUrl, stats, isDispatcharr, config.ForceAudioTranscode, config.HttpUserAgent);
+            var mediaSource = CreateMediaSourceInfo(streamId, streamUrl, stats, isDispatcharr, config.ForceAudioTranscode, config.HttpUserAgent, config.DeclareDvbSubtitles);
             Logger.Info("[stream-timing] ch={0} CreateMediaSource={1}ms hasStats={2}", tunerChannel?.Name, sw.ElapsedMilliseconds, stats != null);
 
             return new List<MediaSourceInfo> { mediaSource };
@@ -600,7 +600,7 @@ namespace Emby.Xtream.Plugin.Service
             Logger.Info("[stream-timing] ch={0} BuildUrl={1}ms isDispatcharr={2}", tunerChannel?.Name, sw.ElapsedMilliseconds, isDispatcharr);
             sw.Restart();
 
-            var mediaSource = CreateMediaSourceInfo(streamId, streamUrl, stats, isDispatcharr, config.ForceAudioTranscode, config.HttpUserAgent);
+            var mediaSource = CreateMediaSourceInfo(streamId, streamUrl, stats, isDispatcharr, config.ForceAudioTranscode, config.HttpUserAgent, config.DeclareDvbSubtitles);
             Logger.Info("[stream-timing] ch={0} CreateMediaSource={1}ms hasStats={2}", tunerChannel?.Name, sw.ElapsedMilliseconds, stats != null);
 
             var httpClient = Plugin.CreateHttpClient();
@@ -1301,6 +1301,32 @@ namespace Emby.Xtream.Plugin.Service
 
                     mediaStreams.Add(videoStream);
                 }
+
+                if (declareDvbSubtitles)
+                {
+                    mediaStreams.Add(new MediaStream
+                    {
+                        Type = MediaStreamType.Subtitle,
+                        Index = mediaStreams.Count,
+                        Codec = "dvb_subtitle",
+                        IsExternal = false,
+                        IsForced = false,
+                        IsDefault = false,
+                        DisplayTitle = "DVB Subtitles",
+                    });
+                    mediaStreams.Add(new MediaStream
+                    {
+                        Type = MediaStreamType.Subtitle,
+                        Index = mediaStreams.Count,
+                        Codec = "dvb_subtitle",
+                        IsExternal = false,
+                        IsForced = false,
+                        IsDefault = false,
+                        IsHearingImpaired = true,
+                        DisplayTitle = "DVB Subtitles SDH",
+                    });
+                }
+
 
                 // Prefer the audio_channels field from stream_stats when present (Dispatcharr
                 // 0.19.0+ includes it as e.g. "5.1", "2.0", "stereo").  Fall back to
